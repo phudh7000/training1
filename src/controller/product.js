@@ -25,7 +25,7 @@ const deleteProduct = async (req, res, next) => {
         await Product.deleteOne({ _id })
         res.json('delete seccess');
     } catch (error) {
-        next(error)
+        res.json("wrong _id");
     }
 }
 const updateProduct = async (req, res, next) => {
@@ -34,7 +34,7 @@ const updateProduct = async (req, res, next) => {
         await Product.updateOne({ _id }, product)
         res.json('update seccess');
     } catch (error) {
-        next(error)
+        res.json("wrong _id");
     }
 }
 
@@ -44,8 +44,27 @@ const filterProduct = async (req, res, next) => {
         const products = await Product.find(req.query);
         res.json(products)
     } catch (error) {
-        next(error)
+        next(error);
     }
+}
+
+const importData = (req, res, next) => {
+    const results = [];
+
+    fs.createReadStream(`../../uploads/${req.file.filename}`)
+        .pipe(csv({columns: true}))
+        .on('data', (data) => results.push(data))
+        .on('error',(err)=>{
+            next(err)
+        })
+        .on('end', async () => {
+            // await product.deleteMany({})
+        
+            // product.insertMany(results)
+            // .then(rs=>console.log(rs))
+            // .catch(err=>console.log(err));
+             res.json(results);
+        });
 }
 
 
@@ -54,5 +73,6 @@ module.exports = {
     newProduct,
     deleteProduct,
     updateProduct,
-    filterProduct
+    filterProduct,
+    importData
 }

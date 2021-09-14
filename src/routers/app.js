@@ -1,9 +1,9 @@
 const productRouter = require('./product')
-const loginRouter = require('./login')
+const loginRouter = require('./user')
 
 function route(app){
     app.use('/product', productRouter)
-    app.use('./login', loginRouter)
+    app.use('/user', loginRouter)
 }
 
 
