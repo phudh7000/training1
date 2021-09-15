@@ -23,8 +23,9 @@ const createProductSchema = Joi.object({
     packingSize: Joi.number().min(0),
     status: Joi.boolean().default(false)
 })
+
 const updateProductSchema = Joi.object({
-    _id: Joi.string(),
+    _id: Joi.string().required(),
     name: Joi.string(),
     category: Joi.string(),
     price: Joi.number().min(0),
@@ -34,25 +35,42 @@ const updateProductSchema = Joi.object({
     status: Joi.boolean().default(false)
 })
 
+const deleteProductSchema = Joi.object({
+    _id: Joi.string().required()
+})
+
 const createUserSchema = Joi.object({
-    username: Joi.string().length(8).required(),
-    password: Joi.string().required()
+    username: Joi.string().min(8).required(),
+    password: Joi.string().min(8).required(),
+})
+
+const updateUserSchema = Joi.object({
+    _id: Joi.string().required(),
+    username: Joi.string().min(8),
+    password: Joi.string().min(8),
+    role: Joi.string()
+})
+
+const deleteUserSchema = Joi.object({
+    _id: Joi.string().required()
 })
 
 module.exports = {
     validateBody,
     createProductSchema,
     updateProductSchema,
-    createUserSchema
+    deleteProductSchema,
+    createUserSchema,
+    updateUserSchema,
+    deleteUserSchema
+
 }
 
 // try {
-//     const {error, value} = productSchema.validate({
-//         name: "12",
-//         category: "phuong tien",
-//         price: 15,
-//         weight: 32.5,
-//         packingSize: 45,
+//     const {error, value} = createUserSchema.validate({
+//         username: "8fdsfsdfds",
+//         password: "12345646",
+//         role: "hha"
 //     })
 //     console.log(error)
 // } catch (error) {

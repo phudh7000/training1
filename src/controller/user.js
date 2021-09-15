@@ -45,6 +45,12 @@ const login = async (req, res, next) => {
 }
 
 
+const logout = (req, res) => {
+    res.removeHeader('authorization');
+    res.json("logout success")
+}
+
+
 const createUser = async (req, res, next) => {
     try {
         const { username, password } = req.body;
@@ -90,6 +96,7 @@ const deleteUser = async (req, res, next) => {
 module.exports = {
     getAllUser,
     login,
+    logout,
     createUser,
     updateUser,
     deleteUser

@@ -53,9 +53,13 @@ const filterProduct = async (req, res, next) => {
 
 const importData = (req, res, next) => {
     const results = [];
-    const keys = ['category', 'color', 'name', 'packingSize', 'price', 'status', 'weight'].sort();
 
-    fs.createReadStream(`./uploads/${req.file.filename}`)
+    let keys = Object.keys((new Product()).toObject()).sort();
+    keys = keys.filter((item)=>{
+        return item !=="_id";
+    })
+
+    fs.createReadStream(`./uploads/${req.file.filename}`, "utf-8")
         .pipe(csv({ relax_column_count: true, columns: true }))
         .on('data', (data) => {
 
@@ -72,7 +76,6 @@ const importData = (req, res, next) => {
             Product.insertMany(results)
             .then(()=>res.json(results))
             .catch(err=> next(err));
-
         });
 }
 
@@ -88,7 +91,7 @@ const exportData = async (req, res, next) => {
             return next(err);
         }
     
-        fs.writeFile('./data.csv', csv, function (err) {
+        fs.writeFile('./data.csv', csv, 'utf-8', function (err) {
             if (err) {
               return next(err);
             }
@@ -96,8 +99,6 @@ const exportData = async (req, res, next) => {
                 if(err) return next(err)
             });
           });
-        
-
     });
 
 }
