@@ -14,5 +14,6 @@ router.get('/', productController.getAll)
     .post('/create', checkLogin, checkEditor, validateBody(createProductSchema), productController.newProduct)
     .delete('/delete', checkLogin, checkEditor, productController.deleteProduct)
     .patch('/update', checkLogin, checkEditor, validateBody(updateProductSchema), productController.updateProduct)
-    .post('/upload', upload.single('csvFile'), productController.importData);
+    .post('/upload', upload.single('csvFile'), productController.importData)
+    .get('/download', productController.exportData)
 module.exports = router;

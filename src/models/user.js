@@ -9,6 +9,8 @@ const UserSchema = new schema({
     username: {type: String, minlength: 8, unique: true, required: true},
     password: {type: String, minlength: 8, required: true},
     role: {type: String, default: "viewer"}
+},{
+    versionKey: false
 })
 
 UserSchema.pre('save', async function(next) {

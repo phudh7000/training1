@@ -1,4 +1,7 @@
 const Product = require('../models/product')
+const csv = require('csv-parse')
+const converter = require('json-2-csv')
+const fs = require('fs')
 
 const getAll = async (req, res, next) => {
     try {
@@ -50,21 +53,53 @@ const filterProduct = async (req, res, next) => {
 
 const importData = (req, res, next) => {
     const results = [];
+    const keys = ['category', 'color', 'name', 'packingSize', 'price', 'status', 'weight'].sort();
 
-    fs.createReadStream(`../../uploads/${req.file.filename}`)
-        .pipe(csv({columns: true}))
-        .on('data', (data) => results.push(data))
-        .on('error',(err)=>{
-            next(err)
+    fs.createReadStream(`./uploads/${req.file.filename}`)
+        .pipe(csv({ relax_column_count: true, columns: true }))
+        .on('data', (data) => {
+
+            if (JSON.stringify(Object.keys(data).sort()) === JSON.stringify(keys)) {
+               results.push(data) 
+            }
+        })
+        .on('error', (err) => {
+            return next(err)
         })
         .on('end', async () => {
-            // await product.deleteMany({})
-        
-            // product.insertMany(results)
-            // .then(rs=>console.log(rs))
-            // .catch(err=>console.log(err));
-             res.json(results);
+
+            await Product.deleteMany({})
+            Product.insertMany(results)
+            .then(()=>res.json(results))
+            .catch(err=> next(err));
+
         });
+}
+
+
+const exportData = async (req, res, next) => {
+
+    let result = await Product.find({},{_id: 0});
+
+    result = result.map((item)=>item.toObject());
+    
+    converter.json2csv(result, (err, csv) => {
+        if (err) {
+            return next(err);
+        }
+    
+        fs.writeFile('./data.csv', csv, function (err) {
+            if (err) {
+              return next(err);
+            }
+            res.download('./data.csv', function (err) {
+                if(err) return next(err)
+            });
+          });
+        
+
+    });
+
 }
 
 
@@ -74,5 +109,6 @@ module.exports = {
     deleteProduct,
     updateProduct,
     filterProduct,
-    importData
+    importData,
+    exportData
 }

@@ -7,7 +7,7 @@ const checkLogin = async (req, res, next) => {
     const token = req.headers["authorization"];
 
     if ( !token ) {
-        return res.json("Please login first")
+        return res.json("must login first")
     }
 
         const decoded = jwt.verify(token, process.env.SECRET_TOKEN);

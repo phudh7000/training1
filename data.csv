@@ -1,0 +1,7 @@
+name,category,price,color,weight,packingSize,status
+dieu hoa,dien may,40000,xanh,20,40,true
+nokia,dien thoai,80000,den,2,10,true
+samsung,dien thoai,80000,vang,2,10,false
+dell,may tinh,90000,den,7,10,true
+to,phuong tien,90000,den,1000.2,10,true
+may bay,phuong tien,5.2,trang,1000.2,10,true
